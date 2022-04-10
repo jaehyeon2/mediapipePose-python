@@ -1,15 +1,15 @@
+import sys
 import time
 
 import cv2
 
 from PoseModule import PoseDetector
 
-import sys
-sys.path.append("./tubePose.py")
+
+sys.path.append("tubePose.py")
 from tubePose import x, y, drawline, lmList1
 
-
-def camPose():
+def camPose(shared_dict):
     cap = cv2.VideoCapture(0)
     pTime = 0
     detector = PoseDetector()
@@ -17,6 +17,7 @@ def camPose():
 
 
     while True:
+        # z=0
         success, img2 = cap.read()
         img2 = cv2.flip(img2, 1)
         img2 = cv2.resize(img2, (640, 400))
@@ -24,8 +25,10 @@ def camPose():
         img2 = detector.findPose(img2)
         lmList2=detector.findPosition(img2,draw=False)
         if len(lmList2) !=0:
-            print(lmList2[14])
+            # print(lmList2[14])
             cv2.circle(img2, (lmList2[14][1], lmList2[14][2]), 15, (0,0,255), cv2.FILLED)
+
+        _add_body_lines(img2, shared_dict)
 
         # 라인을 표시하려 하면 x, y의 범위가 초과되어 오류가 발생
         # drawline(lmList1)
@@ -61,6 +64,24 @@ def camPose():
 
         #cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3,
                     #(255, 0, 0), 3)
+
         cv2.imshow('camPose', img2)
         if cv2.waitKey(1) == ord('q'):
             break
+
+def _add_body_lines(image, body_positions: dict):
+    for i in range(11, 15):  # 양팔 추가
+        if body_positions[i] is not None and body_positions[i + 2] is not None:
+            cv2.line(image, body_positions[i], body_positions[i + 2], (255, 255, 255), 3)
+
+    for i in [11]:  # 어깨 추가
+        if body_positions[i] is not None and body_positions[i + 1] is not None:
+            cv2.line(image, body_positions[i], body_positions[i + 1], (255, 255, 255), 3)
+
+    for i in [23]:  # 배 추가
+        if body_positions[i] is not None and body_positions[i + 1] is not None:
+            cv2.line(image, body_positions[i], body_positions[i + 1], (255, 255, 255), 3)
+
+    for i in [11, 12]:  # 어깨와 배 연결하여, 네모 모양 만듦
+        if body_positions[i] is not None and body_positions[i + 12] is not None:
+            cv2.line(image, body_positions[i], body_positions[i + 12], (255, 255, 255), 3)

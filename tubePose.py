@@ -8,7 +8,7 @@ from PoseModule import PoseDetector
 lmList1=[]
 x=[]
 y=[]
-def tubePose():
+def tubePose(shared_dict:dict):
     cap = cv2.VideoCapture('biceps3.mov')
     detector = PoseDetector()
     videofps=cap.get(CAP_PROP_FPS)
@@ -18,6 +18,7 @@ def tubePose():
     posList = []
 
     while True:
+        z=0# 프레임 별로 저장할 변수
         success, img1 = cap.read()
         img1 = cv2.resize(img1, (640,400))
 
@@ -27,12 +28,15 @@ def tubePose():
 
         img1 = detector.findPose(img1)
         lmList1 = detector.findPosition(img1, draw=False)
-        print(lmList1)
+        # print(lmList1)
 
-        lmString = ''
-        for lm in lmList1:
-            lmString += f'{lm[1]}, {lm[2]},'
-        posList.append(lmString)
+
+        for item in lmList1:
+            shared_dict[item[0]] = (item[1], item[2])
+        # lmString = ''
+        # for lm in lmList1:
+        #     lmString += f'{lm[1]}, {lm[2]},'
+        # posList.append(lmString)
 
         # cTime = time.time()
         # fps = videofps
