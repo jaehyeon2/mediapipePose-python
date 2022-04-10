@@ -1,17 +1,15 @@
-from multiprocessing import Process, Manager
+from multiprocessing import Process
 
 from tubePose import tubePose
 from camPose import camPose
 
 
 if __name__=='__main__':
-    manager = Manager()
-    shared_dict = manager.dict()
 
-    video=Process(target=tubePose, args=(shared_dict, ))
+    video=Process(target=tubePose)
     video.start()
 
-    cam = Process(target=camPose, args=(shared_dict, ))
+    cam = Process(target=camPose)
     cam.start()
 
     video.join()
