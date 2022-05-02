@@ -28,9 +28,14 @@ def cam_pose(shared_dict):
             # print(lm_list2[14])
             cv2.circle(img2, (lm_list2[14][1], lm_list2[14][2]), 15, (0, 0, 255), cv2.FILLED)
 
-        logger.debug(shared_dict)
+        # logger.debug(shared_dict)
 
-        _add_body_lines(img2, shared_dict)
+        if (shared_dict):
+            print("shared_dict", shared_dict)
+        else:
+            print("not")
+            print("shared_dict", shared_dict)
+            _add_body_lines(img2, shared_dict)
 
         cTime = time.time()
         fps = 1 / (cTime - p_time)

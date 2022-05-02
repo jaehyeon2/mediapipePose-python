@@ -1,84 +1,62 @@
-#youtube video 받아오기
+# import time
 
-import pafy
 import cv2
+from cv2 import CAP_PROP_FPS
+import pafy
 
-url = "https://www.youtube.com/watch?v=gdZLi9oWNZg"
-video = pafy.new(url)
+from PoseModule import PoseDetector
+import logging
+logger = logging.getLogger("tube_pose")
+logging.basicConfig(level=logging.DEBUG)
 
-print("video title : {}".format(video.title))  # 제목
-print("video rating : {}".format(video.rating))  # 평점
-print("video viewcount : {}".format(video.viewcount))  # 조회수
-print("video author : {}".format(video.author))  # 저작권자
-print("video length : {}".format(video.length))  # 길이
-print("video duration : {}".format(video.duration))  # 길이
-print("video likes : {}".format(video.likes))  # 좋아요
-print("video dislikes : {}".format(video.dislikes))  # 싫어요
+lmList1 = []
+x = []
+y = []
 
-best = video.getbest(preftype="mp4")
-print("best resolution : {}".format(best.resolution))
 
-cap = cv2.VideoCapture(best.url)
+def tube_pose(shared_dict: dict):
+    url = "https://www.youtube.com/watch?v=gdZLi9oWNZg"
+    video = pafy.new(url)
 
-# 동영상 크기(frame정보)를 읽어옴
-frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    best = video.getbest(preftype="mp4")
+    print("best resolution : {}".format(best.resolution))
 
-# 동영상 프레임을 캡쳐
-frameRate = int(cap.get(cv2.CAP_PROP_FPS))
+    cap = cv2.VideoCapture(best.url)
+    detector = PoseDetector()
+    videofps = cap.get(CAP_PROP_FPS)
+    print("fps -> ", videofps)
+    delay = round(1000 / videofps)
 
-frame_size = (frameWidth, frameHeight)
-print('frame_size={}'.format(frame_size))
-print('fps={}'.format(frameRate))
+    while True:
+        success, img1 = cap.read()
+        if not success:
+            print('가져올 프레임 없음')
+            break
 
-# cv2.VideoWriter_fourcc(*'코덱')
-# codec 및 녹화 관련 설정
-# 인코딩 방식을 설정
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-# fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-# fourcc = cv2.VideoWriter_fourcc(*'MPEG')
-# fourcc = cv2.VideoWriter_fourcc(*'X264')
+        img1 = cv2.resize(img1, (640, 400))
 
-out1Path = 'data/recode1.mp4'
-out2Path = 'data/recode2.mp4'
+        img1 = detector.findPose(img1)
+        lm_list1 = detector.findPosition(img1, draw=False)
+        # print(lm_list1)
 
-# 영상 저장하기
-# out1Path : 저장할 파일명
-# fourcc : frame 압축 관련 설정(인코딩, 코덱 등)
-# frameRate : 초당 저장할 frame
-# frame_size : frame 사이즈(가로, 세로)
-# isColor : 컬러 저장 여부
-out1 = cv2.VideoWriter(out1Path, fourcc, frameRate, frame_size)
-out2 = cv2.VideoWriter(out2Path, fourcc, frameRate, frame_size)
+        for item in lm_list1:
+            shared_dict[item[0]] = (item[1], item[2])
+        logger.debug(shared_dict)
+        # pos_list.append(lm_string)
+        #
+        # print("tube_pose : ", lm_string)
 
-while True:
-    # 한 장의 이미지를 가져오기
-    # 이미지 -> frame
-    # 정상적으로 읽어왔는지 -> retval
-    retval, frame = cap.read()
-    if not (retval):
-        break  # 프레임정보를 정상적으로 읽지 못하면 while문을 빠져나가기
+        # cTime = time.time()
+        # fps = videofps
+        # pTime = cTime
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # 회색으로 컬러 변환
-    edges = cv2.Canny(gray, 100, 200)  # Canny함수로 엣지 따기
+        # cv2.putText(img, str(int(fps)), (50, 100), cv2.FONT_HERSHEY_PLAIN, 5,
+        # (255, 0, 0), 5)
 
-    # 동영상 파일에 쓰기
-    out1.write(frame)
-    out2.write(edges)
+        cv2.imshow('videoPose', img1)
+        if (cv2.waitKey(delay) == 27) | (cv2.waitKey(1) == ord('q')):
+            break
+        # if key == ord('s'):
+        # with open("/Users/ming/PycharmProjects/pythonProject/2Dposition.txt", 'w') as f:
+        #    f.writelines(["%s\n" % item for item in posList])
 
-    # 모니터에 출력
-    cv2.imshow('frame', frame)
-    cv2.imshow('edges', edges)
-
-    key = cv2.waitKey(frameRate)  # frameRate msec동안 한 프레임을 보여준다
-
-    # 키 입력을 받으면 키값을 key로 저장 -> esc == 27
-    if key == 27:
-        break
-
-if cap.isOpened():
-    cap.release()
-    out1.release()
-    out2.release()
-
-cv2.destroyAllWindows()

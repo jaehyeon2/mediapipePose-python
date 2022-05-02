@@ -6,7 +6,6 @@ from PoseModule import PoseDetector
 
 import sys
 sys.path.append("./tubePose.py")
-from tubePose import x, y, drawline, lmList1
 
 
 def camPose():

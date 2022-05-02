@@ -2,6 +2,7 @@
 
 import cv2
 from cv2 import CAP_PROP_FPS
+import pafy
 
 from PoseModule import PoseDetector
 import logging
@@ -14,7 +15,13 @@ y = []
 
 
 def tube_pose(shared_dict: dict):
-    cap = cv2.VideoCapture('biceps3.mov')
+    url = "https://www.youtube.com/watch?v=1W9gMxLoW6Q"
+    video = pafy.new(url)
+
+    best = video.getbest(preftype="mp4")
+    print("best resolution : {}".format(best.resolution))
+
+    cap = cv2.VideoCapture(best.url)
     detector = PoseDetector()
     videofps = cap.get(CAP_PROP_FPS)
     print("fps -> ", videofps)
@@ -34,7 +41,7 @@ def tube_pose(shared_dict: dict):
 
         for item in lm_list1:
             shared_dict[item[0]] = (item[1], item[2])
-        logger.debug(shared_dict)
+        # logger.debug(shared_dict)
         # pos_list.append(lm_string)
         #
         # print("tube_pose : ", lm_string)
@@ -52,3 +59,4 @@ def tube_pose(shared_dict: dict):
         # if key == ord('s'):
         # with open("/Users/ming/PycharmProjects/pythonProject/2Dposition.txt", 'w') as f:
         #    f.writelines(["%s\n" % item for item in posList])
+
