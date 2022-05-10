@@ -30,13 +30,11 @@ def cam_pose(shared_dict):
 
         # logger.debug(shared_dict)
 
-        if shared_dict:
-            print("shared_dict", shared_dict)
-
-        else:
-            print("not")
-            print("shared_dict", shared_dict)
+        try:
             _add_body_lines(img2, shared_dict)
+        except:
+            print("동영상이 아직 로드되지 않았습니다.")
+
 
         cTime = time.time()
         fps = 1 / (cTime - p_time)
