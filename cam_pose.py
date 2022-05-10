@@ -30,8 +30,9 @@ def cam_pose(shared_dict):
 
         # logger.debug(shared_dict)
 
-        if (shared_dict):
+        if shared_dict:
             print("shared_dict", shared_dict)
+
         else:
             print("not")
             print("shared_dict", shared_dict)
