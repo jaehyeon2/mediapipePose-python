@@ -63,3 +63,8 @@ def _add_body_lines(image, body_positions: dict):
     for i in [11, 12]:  # 어깨와 배 연결하여, 네모 모양 만듦
         if body_positions[i] is not None and body_positions[i + 12] is not None:
             cv2.line(image, body_positions[i], body_positions[i + 12], (255, 255, 255), 3)
+
+    for i in [23, 24]:  # 다리 추가
+        if body_positions[i] is not None and body_positions[i + 2] is not None and body_positions[i + 4] is not None:
+            cv2.line(image, body_positions[i], body_positions[i + 2], (255, 255, 255), 3)
+            cv2.line(image, body_positions[i+2], body_positions[i + 4], (255, 255, 255), 3)
