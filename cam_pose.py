@@ -18,8 +18,8 @@ def cam_pose(shared_dict):
     detector = PoseDetector()
 
     while True:
-        if not shared_dict:
-            continue
+        # if not shared_dict:
+        #     continue
 
         success, img2 = cap.read()
         img2 = cv2.flip(img2, 1)
@@ -27,9 +27,9 @@ def cam_pose(shared_dict):
         # 사용자가 보기 편하게 좌우 반전
         img2 = detector.findPose(img2)
         lm_list2 = detector.findPosition(img2, draw=False)
-        if len(lm_list2) != 0:
-            # print(lm_list2[14])
-            cv2.circle(img2, (lm_list2[14][1], lm_list2[14][2]), 15, (0, 0, 255), cv2.FILLED)
+        # if len(lm_list2) != 0:
+        #     # print(lm_list2[14])
+        #     cv2.circle(img2, (lm_list2[14][1], lm_list2[14][2]), 15, (0, 0, 255), cv2.FILLED)
 
         # logger.debug(shared_dict)
 
@@ -71,3 +71,4 @@ def _add_body_lines(image, body_positions: dict):
         if body_positions[i] is not None and body_positions[i + 2] is not None and body_positions[i + 4] is not None:
             cv2.line(image, body_positions[i], body_positions[i + 2], (255, 255, 255), 3)
             cv2.line(image, body_positions[i+2], body_positions[i + 4], (255, 255, 255), 3)
+
