@@ -18,6 +18,9 @@ def cam_pose(shared_dict):
     detector = PoseDetector()
 
     while True:
+        if not shared_dict:
+            continue
+
         success, img2 = cap.read()
         img2 = cv2.flip(img2, 1)
         img2 = cv2.resize(img2, (640, 400))
