@@ -23,7 +23,6 @@ def tube_pose(shared_dict: dict):
 
     cap = cv2.VideoCapture(best.url)
 
-    # cap = cv2.VideoCapture('biceps3.mov')
     detector = PoseDetector()
     videofps = cap.get(CAP_PROP_FPS)
     print("fps -> ", videofps)

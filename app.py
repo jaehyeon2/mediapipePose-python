@@ -1,6 +1,4 @@
-from urllib import request
-
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 import logging
 logger = logging.getLogger("app")
@@ -15,7 +13,7 @@ def home():
 def link():
     return render_template('link.html')
 
-@app.route('/slinky')
+@app.route('/slinky', methods=['post'])
 def slinky():
     link = request.form.get("link")
     print(link)
