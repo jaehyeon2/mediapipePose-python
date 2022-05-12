@@ -14,9 +14,11 @@ x = []
 y = []
 
 
-def tube_pose(shared_dict: dict):
-    url = "https://www.youtube.com/watch?v=1W9gMxLoW6Q"
+def tube_pose(shared_dict: dict, link):
+    # url = "https://www.youtube.com/watch?v=1W9gMxLoW6Q"
+    url=link
     video = pafy.new(url)
+
 
     best = video.getbest(preftype="mp4")
     print("best resolution : {}".format(best.resolution))
