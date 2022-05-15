@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 from multiprocessing import Process, Manager
 
 import cv2
@@ -94,16 +95,5 @@ def generate_video(video_url):
 
 
 if __name__ == '__main__':
-    # construct the argument parser and parse command line arguments
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--ip", type=str, required=True,
-                    help="ip address of the device")
-    ap.add_argument("-o", "--port", type=int, required=True,
-                    help="ephemeral port number of the server (1024 to 65535)")
-    ap.add_argument("-f", "--frame-count", type=int, default=32,
-                    help="# of frames used to construct the background model")
-    args = vars(ap.parse_args())
-
-    # start the flask app
-    app.run(host=args["ip"], port=args["port"], debug=True,
-            threaded=True, use_reloader=False)
+    port = int(os.environ.get('PORT', 80))
+    app.run(host='0.0.0.0', port=port, debug=True, threaded=True)
