@@ -1,3 +1,4 @@
+import logging
 import sys
 import time
 
@@ -5,7 +6,6 @@ import cv2
 
 from PoseModule import PoseDetector
 
-import logging
 logger = logging.getLogger("cam_pose")
 logging.basicConfig(level=logging.DEBUG)
 
@@ -38,14 +38,15 @@ def cam_pose(shared_dict):
         except:
             print("동영상이 아직 로드되지 않았습니다.")
 
-
         cTime = time.time()
         fps = 1 / (cTime - p_time)
         p_time = cTime
 
         # cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3,
         # (255, 0, 0), 3)
-        cv2.imshow('camPose', img2)
+        # cv2.imshow('camPose', img2)
+        shared_dict['cam_output'] = img2.copy()
+
         if cv2.waitKey(1) == ord('q'):
             break
 
@@ -70,5 +71,4 @@ def _add_body_lines(image, body_positions: dict):
     for i in [23, 24]:  # 다리 추가
         if body_positions[i] is not None and body_positions[i + 2] is not None and body_positions[i + 4] is not None:
             cv2.line(image, body_positions[i], body_positions[i + 2], (255, 255, 255), 3)
-            cv2.line(image, body_positions[i+2], body_positions[i + 4], (255, 255, 255), 3)
-
+            cv2.line(image, body_positions[i + 2], body_positions[i + 4], (255, 255, 255), 3)

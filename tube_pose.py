@@ -1,11 +1,11 @@
-# import time
+import logging
 
 import cv2
-from cv2 import CAP_PROP_FPS
 import pafy
+from cv2 import CAP_PROP_FPS
 
 from PoseModule import PoseDetector
-import logging
+
 logger = logging.getLogger("tube_pose")
 logging.basicConfig(level=logging.DEBUG)
 
@@ -16,9 +16,8 @@ y = []
 
 def tube_pose(shared_dict: dict, link):
     # url = "https://www.youtube.com/watch?v=1W9gMxLoW6Q"
-    url=link
+    url = link
     video = pafy.new(url)
-
 
     best = video.getbest(preftype="mp4")
     print("best resolution : {}".format(best.resolution))
@@ -56,10 +55,10 @@ def tube_pose(shared_dict: dict, link):
         # cv2.putText(img, str(int(fps)), (50, 100), cv2.FONT_HERSHEY_PLAIN, 5,
         # (255, 0, 0), 5)
 
-        cv2.imshow('videoPose', img1)
+        # cv2.imshow('videoPose', img1)
+        shared_dict['tube_output'] = img1.copy()
         if (cv2.waitKey(delay) == 27) | (cv2.waitKey(1) == ord('q')):
             break
         # if key == ord('s'):
         # with open("/Users/ming/PycharmProjects/pythonProject/2Dposition.txt", 'w') as f:
         #    f.writelines(["%s\n" % item for item in posList])
-
