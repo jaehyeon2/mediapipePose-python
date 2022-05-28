@@ -19,9 +19,9 @@ def home():
     return render_template('main.html')
 
 
-@app.route('/link')
-def link():
-    return render_template('link.html')
+# @app.route('/link')
+# def link():
+#     return render_template('link.html')
 
 
 @app.route('/slinky')
