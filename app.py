@@ -24,9 +24,9 @@ def link():
     return render_template('link.html')
 
 
-@app.route('/slinky')
+@app.route('/slinky', methods=['post'])
 def slinky():
-    video_feed_url = f"/video_feed?video_url={request.args.to_dict().get('link')}"
+    video_feed_url = "/video_feed?video_url={request.args.to_dict().get('link')}"
     print(video_feed_url)
 
     return render_template('pose.html', video_feed_url=video_feed_url)
@@ -44,7 +44,8 @@ def video_feed():
 
 @app.route("/cam_feed")
 def cam_feed():
-    return Response(generate_cam(),
+    cam = generate_cam()
+    return Response(cam,
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 

@@ -5,7 +5,7 @@ import cv2
 from cam_pose import cam_pose
 from tube_pose import tube_pose
 
-TEST_URL = "https://www.youtube.com/watch?v=1W9gMxLoW6Q"
+TEST_URL = "https://www.youtube.com/shorts/FECEcjQ35EE"
 
 if __name__ == '__main__':
 
